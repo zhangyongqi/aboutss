@@ -6,8 +6,8 @@ if [[ $(id -u) != "0" ]]; then
 fi
 printf "
 ####################################################
-# This is a shadowsocks-python  setup program for centos6                 
-# Version: 1.0.                                    
+# This is a shadowsocks-python  install program for centos6                 
+# Version: 1.2.                                   
 # Author: aboutss QQ:87992687                           
 # Website: http://www.aboutss.net  
 # Thanks to AnonymousV:http://shadowsocks.blogspot.tw/2015/01/shadowsocks.html                                                               #
@@ -19,13 +19,26 @@ yum install epel-release -y
 yum update -y
 yum install python-setuptools m2crypto supervisor -y
 easy_install pip  
-pip install shadowsocks 
+pip install shadowsocks
+#config setting
+echo "#############################################################"
+echo "#"
+echo "# Please input your shadowsocks-python server_port and password"
+echo "#"
+echo "#############################################################"
+echo ""
+echo "input server_port:"
+read sspyserverport
+echo "input password:"
+read sspypwd
+ 
+# Config shadowsocks
    cat << _EOF_ >/etc/shadowsocks.json
 {
     "server":"0.0.0.0",
-    "server_port":8388,
+    "server_port":${sspyserverport},
     "local_port":1080,
-    "password":"www.aboutss.net",
+    "password":"${sspypwd}",
     "timeout":600,
     "method":"aes-256-cfb"
 }
@@ -103,16 +116,17 @@ service supervisord start
 touch /var/lock/subsys/local
 
 _EOF_
-printf "
-####################################################
-#          shadowsocks infomation :                                           
-# server_port:8388
-# password:www.aboutss.net
-# timeout:600
-# method:aes-256-cfb              
-####################################################
-"
+#start
+#autorun
+#echo "ssserver -c /etc/config.json" >> /etc/rc.local
+echo ""
+    echo -e "============================="
+    echo -e "Shadowsocks-python install completed!"
+    #echo -e "Your Server IP: ${IP}"
+    echo -e "Your Server Port: ${sspyserverport}"
+    echo -e "Your Password: ${sspypwd}"
+    echo -e "Your Encryption Method:aes-256-cfb"
+    echo -e "==============================="
 echo "Press any key to reboot the system"
 read num
 reboot
-
